@@ -15,13 +15,19 @@ def processSenti(fp):
 	return dictSenti
 
 def processTweets(fp, senti):
+    sentiList = []
     for item in lines(fp):
-        tweet = json.loads(item)["text"]
-        sentiScore = 0
-        for word in tweet.split(' '):
-            if word.lower() in senti:
-                sentiScore += int(senti[word.lower()])     
-        print tweet, sentiScore
+        jsonTw = json.loads(item)
+        if "text" in jsonTw:
+            tweet = jsonTw["text"]
+            sentiScore = 0.0
+            for word in tweet.split(' '):
+                if word.lower() in senti:
+                    sentiScore += int(senti[word.lower()])     
+            sentiList.append(sentiScore)
+
+    for senti in sentiList:
+        print senti            
     
 def main():
     sent_file = open(sys.argv[1])
