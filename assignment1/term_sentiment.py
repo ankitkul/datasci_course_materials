@@ -18,11 +18,14 @@ def processTweets(fp, senti):
         if "text" in jsonTw:
             tweet = jsonTw["text"]
             tweet_id = jsonTw["id"]
-            sentiScore = 0.0
-            for word in tweet.split():
-                if word.lower() in senti:
-                    sentiScore += int(senti[word.lower()])     
-            sentiList.append([tweet_id,sentiScore, tweet])
+            user = jsonTw["user"]
+            if user is not None:
+                if user["lang"] == "en":                 
+                    sentiScore = 0.0
+                    for word in tweet.split():
+                        if word in senti:
+                            sentiScore += int(senti[word])     
+                    sentiList.append([tweet_id,sentiScore, tweet])
 
     filtersenti = []        
     for item in sentiList:
@@ -34,11 +37,11 @@ def newtermsenti(sentifilter, senti):
 	newterm = {}
 	for item in sentifilter:
 		for word in item[2].split():
-			if word.lower() not in senti:
-				if word.lower() in newterm:
-					newterm[word.lower()] = newterm[word.lower()] + item[1]
+			if word not in senti:
+				if word in newterm:
+					newterm[word] = newterm[word] + item[1]
 				else:	
-					newterm[word.lower()] =item[1]
+					newterm[word] =item[1]
 	for key,value in newterm.iteritems():
 		print "%s %s" % (key.encode("utf-8"),value)			
 
